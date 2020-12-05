@@ -34,12 +34,12 @@ BAR_LENGTH = 100
 BAR_HEIGHT = 10
 
 # Define Colors 
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
+OFF_WHITE = (251, 251, 248)
+GREY = (61, 72, 73)
 RED = (255, 0, 0)
-GREEN = (0, 255, 0)
-BLUE = (0, 0, 255)
-YELLOW = (255, 255, 0)
+GREEN = (0, 206, 209)
+BLUE = (59, 131, 189)
+YELLOW = (253, 253, 150)
 ###############################
 
 ###############################
@@ -52,7 +52,7 @@ pygame.display.set_caption("Space Shooter")
 clock = pygame.time.Clock()     ## For syncing the FPS
 ###############################
 
-font_name = pygame.font.match_font('arial')
+font_name = pygame.font.match_font('calibri')
 
 def main_menu():
     global screen
@@ -85,15 +85,15 @@ def main_menu():
     #pygame.mixer.music.stop()
     ready = pygame.mixer.Sound(path.join(sound_folder,'getready.ogg'))
     ready.play()
-    screen.fill(BLACK)
-    draw_text(screen, "GET READY!", 40, WIDTH/2, HEIGHT/2)
+    screen.fill(GREY)
+    draw_text(screen, "PREPARE-SE", 40, WIDTH/2, HEIGHT/2)
     pygame.display.update()
     
 
 def draw_text(surf, text, size, x, y):
     ## selecting a cross platform font to display the score
     font = pygame.font.Font(font_name, size)
-    text_surface = font.render(text, True, WHITE)       ## True denotes the font to be anti-aliased 
+    text_surface = font.render(text, True, OFF_WHITE)       ## True denotes the font to be anti-aliased
     text_rect = text_surface.get_rect()
     text_rect.midtop = (x, y)
     surf.blit(text_surface, text_rect)
@@ -110,7 +110,7 @@ def draw_shield_bar(surf, x, y, pct):
     outline_rect = pygame.Rect(x, y, BAR_LENGTH, BAR_HEIGHT)
     fill_rect = pygame.Rect(x, y, fill, BAR_HEIGHT)
     pygame.draw.rect(surf, GREEN, fill_rect)
-    pygame.draw.rect(surf, WHITE, outline_rect, 2)
+    pygame.draw.rect(surf, OFF_WHITE, outline_rect, 2)
 
 
 def draw_lives(surf, x, y, lives, img):
@@ -156,12 +156,12 @@ class Player(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         ## scale the player img down
-        self.image = pygame.transform.scale(player_img, (50, 38))
-        self.image.set_colorkey(BLACK)
+        self.image = pygame.transform.scale(player_img, (90, 60))
+        self.image.set_colorkey(GREY)
         self.rect = self.image.get_rect()
-        self.radius = 20
-        self.rect.centerx = WIDTH / 2
-        self.rect.bottom = HEIGHT - 10
+        self.radius = 60
+        self.rect.centerx = WIDTH / 4
+        self.rect.bottom = HEIGHT - 60
         self.speedx = 0 
         self.shield = 100
         self.shoot_delay = 250
@@ -190,10 +190,10 @@ class Player(pygame.sprite.Sprite):
 
         ## will give back a list of the keys which happen to be pressed down at that moment
         keystate = pygame.key.get_pressed()     
-        if keystate[pygame.K_LEFT]:
-            self.speedx = -5
-        elif keystate[pygame.K_RIGHT]:
-            self.speedx = 5
+        if keystate[pygame.K_LEFT] or keystate[pygame.K_a]:
+            self.speedx = -8
+        elif keystate[pygame.K_RIGHT] or keystate[pygame.K_d]:
+            self.speedx = 8
 
         #Fire weapons by holding spacebar
         if keystate[pygame.K_SPACE]:
@@ -241,7 +241,7 @@ class Player(pygame.sprite.Sprite):
                 missile_sound.play()
 
     def powerup(self):
-        self.power += 1
+        self.power += 5
         self.power_time = pygame.time.get_ticks()
 
     def hide(self):
@@ -255,7 +255,7 @@ class Mob(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.image_orig = random.choice(meteor_images)
-        self.image_orig.set_colorkey(BLACK)
+        self.image_orig.set_colorkey(GREY)
         self.image = self.image_orig.copy()
         self.rect = self.image.get_rect()
         self.radius = int(self.rect.width *.90 / 2)
@@ -299,7 +299,7 @@ class Pow(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.type = random.choice(['shield', 'gun'])
         self.image = powerup_images[self.type]
-        self.image.set_colorkey(BLACK)
+        self.image.set_colorkey(GREY)
         self.rect = self.image.get_rect()
         ## place the bullet according to the current position of the player
         self.rect.center = center
@@ -319,7 +319,7 @@ class Bullet(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
         self.image = bullet_img
-        self.image.set_colorkey(BLACK)
+        self.image.set_colorkey(GREY)
         self.rect = self.image.get_rect()
         ## place the bullet according to the current position of the player
         self.rect.bottom = y 
@@ -342,7 +342,7 @@ class Missile(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
         self.image = missile_img
-        self.image.set_colorkey(BLACK)
+        self.image.set_colorkey(GREY)
         self.rect = self.image.get_rect()
         self.rect.bottom = y
         self.rect.centerx = x
@@ -364,7 +364,7 @@ background_rect = background.get_rect()
 
 player_img = pygame.image.load(path.join(img_dir, 'playerShip1_orange.png')).convert()
 player_mini_img = pygame.transform.scale(player_img, (25, 19))
-player_mini_img.set_colorkey(BLACK)
+player_mini_img.set_colorkey(GREY)
 bullet_img = pygame.image.load(path.join(img_dir, 'laserRed16.png')).convert()
 missile_img = pygame.image.load(path.join(img_dir, 'missile.png')).convert_alpha()
 # meteor_img = pygame.image.load(path.join(img_dir, 'meteorBrown_med1.png')).convert()
@@ -390,7 +390,7 @@ explosion_anim['player'] = []
 for i in range(9):
     filename = 'regularExplosion0{}.png'.format(i)
     img = pygame.image.load(path.join(img_dir, filename)).convert()
-    img.set_colorkey(BLACK)
+    img.set_colorkey(GREY)
     ## resize the explosion
     img_lg = pygame.transform.scale(img, (75, 75))
     explosion_anim['lg'].append(img_lg)
@@ -400,7 +400,7 @@ for i in range(9):
     ## player explosion
     filename = 'sonicExplosion0{}.png'.format(i)
     img = pygame.image.load(path.join(img_dir, filename)).convert()
-    img.set_colorkey(BLACK)
+    img.set_colorkey(GREY)
     explosion_anim['player'].append(img)
 
 ## load power ups
@@ -543,7 +543,7 @@ while running:
         # pygame.display.update()
 
     #3 Draw/render
-    screen.fill(BLACK)
+    screen.fill(GREY)
     ## draw the stargaze.png image
     screen.blit(background, background_rect)
 
